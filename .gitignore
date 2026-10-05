@@ -1,0 +1,38 @@
+# Python compiled cache
+__pycache__/
+**/__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Node.js dependencies
+node_modules/
+**/node_modules/
+package-lock.json
+
+# Environment secrets (NEVER push secrets)
+.env
+.env.local
+*.env
+
+# Virtual environments
+venv/
+.venv/
+ENV/
+
+# Production build outputs
+dist/
+build/
+
+# Temporary / Extracted scratch files
+prd_extracted.txt
+LegalBuddy-Deployment-Package.zip
+scratch/
+brain/
+.vercel/
+
+# System / IDE
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
