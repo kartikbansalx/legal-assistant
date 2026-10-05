@@ -1,8 +1,6 @@
 # 🦉 LegalBuddy — AI Legal Assistant & Contract Auditor
 
-<p align="center">
-  <img src="public/mascot.jpg" alt="LegalBuddy Mascot Owl" width="160" style="border-radius: 20px;" />
-</p>
+
 
 <p align="center">
   <b>LegalBuddy</b> is an intelligent AI Legal Assistant powered by <b>RAG (Retrieval-Augmented Generation)</b>, <b>LangGraph Multi-Step Agentic Reasoning</b>, <b>Clause Extraction</b>, <b>Visual Risk Heatmaps</b>, and <b>Side-by-Side Contract Comparison</b>.
