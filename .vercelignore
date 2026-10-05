@@ -1,0 +1,10 @@
+# Files to exclude from Vercel Serverless function bundling
+PRD  AI-Legal-Assistant.docx
+LegalBuddy-Deployment-Package.zip
+prd_extracted.txt
+scratch/
+brain/
+venv/
+.venv/
+.git/
+.env
