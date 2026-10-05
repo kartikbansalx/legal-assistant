@@ -1,39 +1,30 @@
-# 🦉 LegalBuddy — AI Legal Assistant & Contract Auditor
-
-
+# 🦉 LegalBuddy — AI Legal Assistant & Document Intelligence
 
 <p align="center">
-  <b>LegalBuddy</b> is an intelligent AI Legal Assistant powered by <b>RAG (Retrieval-Augmented Generation)</b>, <b>LangGraph Multi-Step Agentic Reasoning</b>, <b>Clause Extraction</b>, <b>Visual Risk Heatmaps</b>, and <b>Side-by-Side Contract Comparison</b>.
+  <b>LegalBuddy</b> is an intelligent AI Legal Assistant powered by <b>RAG (Retrieval-Augmented Generation)</b>, <b>Gemini AI</b>, and <b>Agentic Multi-Step Reasoning</b>. It enables users to analyze contracts, ask natural-language questions, and receive instant explanations with exact source citations.
 </p>
 
 ---
 
 ## 🌟 Key Features
 
-1. **📄 Document Ingestion & Vector RAG**:
-   - Parses PDF, DOCX, and TXT files with paragraph & page tracking.
-   - Embeds document chunks using Gemini `text-embedding-004` and indexes them into Pinecone vector storage.
+1. **📄 Document Ingestion & Hybrid Vector RAG**:
+   - Parses PDF, DOCX, and TXT contract files with automatic paragraph chunking and page indexing.
+   - Performs hybrid vector search across legal context passages for high-precision retrieval.
 
-2. **🧠 LangGraph Agentic Multi-Step Reasoning**:
-   - Decides which legal tool to call (`retrieve_documents`, `extract_clauses`, `flag_risks`, `compare_documents`, `summarize_section`).
-   - Renders a **live visual reasoning trace** in the UI showing step-by-step tool execution, arguments, and outputs.
+2. **🧠 Agentic Multi-Step Reasoning Trace**:
+   - Executes multi-step RAG tools (`retrieve_documents`, `analyze_clauses`).
+   - Renders a **live reasoning trace** showing step-by-step tool execution, input parameters, and outputs.
 
-3. **🎭 Dual Mode Q&A (Lawyer vs. Client)**:
-   - **Client Mode**: Converts complex legalese into clear, plain English summaries.
-   - **Lawyer Mode**: Provides formal legal analysis with precise clause citations.
+3. **🎭 Dual-Mode Q&A (Lawyer vs. Client)**:
+   - **Client Mode**: Translates complex legalese into clear, plain English summaries.
+   - **Lawyer Mode**: Provides formal legal analysis referencing exact section numbers, obligations, and liabilities.
 
-4. **🗺️ Contract Risk Heatmap**:
-   - Evaluates contracts section-by-section and assigns risk scores (**LOW**, **MEDIUM**, **HIGH**).
-   - Flags one-sided indemnification, broad non-competes, and aggressive bonus clawback provisions.
+4. **⚡ 1-Click Pre-Loaded Demo Contracts**:
+   - Includes pre-loaded contracts (*Mutual NDA*, *Senior Engineer Employment Agreement*, *Enterprise SaaS MSA*) for instant testing without requiring file uploads.
 
-5. **⚖️ Side-by-Side Contract Comparison**:
-   - Compare any two legal documents (e.g., your standard NDA vs. a vendor's agreement) side-by-side with automated recommendations on which instrument is more favorable.
-
-6. **⚡ 1-Click Pre-Loaded Demo Contracts**:
-   - Includes instant sample contracts (Mutual NDA, Employment Agreement, SaaS MSA) for friction-free evaluation without requiring file uploads.
-
-7. **🎯 Confidence Meter & Source Transparency**:
-   - Displays real-time answer confidence percentages (0-100%) and clickable section citations.
+5. **🎯 Confidence Meter & Source Citations**:
+   - Displays real-time confidence scores and section-level citations accompanying every response.
 
 ---
 
@@ -42,20 +33,20 @@
 ```
 ┌────────────────────────────────────────────────────────┐
 │               LegalBuddy React Frontend                │
-│       Vite + Tailwind CSS + Lucide Icons (Glassmorphic)│
+│       Vite + Tailwind CSS + Lucide Icons (Clean UI)    │
 └───────────────────────────┬────────────────────────────┘
                             │
                             ▼
 ┌────────────────────────────────────────────────────────┐
 │            Vercel Serverless API (FastAPI)             │
-│   /api/upload  /api/agent  /api/heatmap  /api/compare  │
-└───────────┬───────────────────┬──────────────────┬─────┘
-            │                   │                  │
-            ▼                   ▼                  ▼
-  ┌──────────────────┐  ┌───────────────┐  ┌──────────────┐
-  │ Google Gemini API│  │ Pinecone DB   │  │ LangGraph    │
-  │ (LLM + Embeddings)│  │ (Vector Store)│  │ (Agent Core) │
-  └──────────────────┘  └───────────────┘  └──────────────┘
+│   /api/health   /api/sample-docs  /api/upload  /api/agent
+└───────────────────────────┬────────────────────────────┘
+                            │
+                            ▼
+                  ┌──────────────────┐
+                  │ Google Gemini API│
+                  │ (LLM & Vector RAG│
+                  └──────────────────┘
 ```
 
 ---
@@ -63,7 +54,7 @@
 ## 🛠️ Local Development Setup
 
 ### 1. Prerequisites
-- **Node.js**: v18+ 
+- **Node.js**: v18+
 - **Python**: 3.9 - 3.12 (Virtual Environment recommended)
 
 ### 2. Environment Configuration
@@ -71,8 +62,6 @@ Create a `.env` file in the root directory:
 
 ```env
 GEMINI_API_KEY=your_gemini_api_key_here
-PINECONE_API_KEY=your_pinecone_api_key_here
-PINECONE_INDEX_NAME=legal-assistant
 ```
 
 ### 3. Backend Setup (FastAPI)
@@ -124,10 +113,7 @@ Frontend will run at: `http://localhost:5173` (with `/api` proxied to port 8000)
 4. **Set Environment Variables on Vercel Dashboard**:
    - Go to your project on [vercel.com](https://vercel.com).
    - Navigate to **Settings -> Environment Variables**.
-   - Add:
-     - `GEMINI_API_KEY`
-     - `PINECONE_API_KEY`
-     - `PINECONE_INDEX_NAME`
+   - Add `GEMINI_API_KEY`.
 
 5. **Deploy to Production**:
    ```bash
@@ -140,23 +126,23 @@ Frontend will run at: `http://localhost:5173` (with `/api` proxied to port 8000)
 2. Go to [Vercel Dashboard](https://vercel.com/new).
 3. Click **"Import Project"** and select your GitHub repository.
 4. Framework Preset will be automatically detected as **Vite**.
-5. Under **Environment Variables**, add `GEMINI_API_KEY`, `PINECONE_API_KEY`, `PINECONE_INDEX_NAME`.
+5. Under **Environment Variables**, add `GEMINI_API_KEY`.
 6. Click **Deploy**. Vercel will automatically build the frontend and host the Python serverless function at `/api/*`.
 
 ---
 
-## 📦 Deployment Package Structure
+## 📦 Repository Structure
 
-This project includes a complete deployment package containing:
-- `api/` — FastAPI Python backend & LangGraph agent logic.
-- `src/` — React modern glassmorphic frontend interface.
-- `public/mascot.jpg` — Cute LegalBuddy cartoon owl logo asset.
-- `vercel.json` — Pre-configured Vercel serverless build & rewrite rules.
-- `requirements.txt` — Python dependencies.
+- `api/` — FastAPI Python backend (`index.py`, `models.py`, `sample_docs.py`, RAG retriever logic).
+- `src/` — React frontend interface (`App.jsx`, `CleanHome.jsx`, `ChatAssistant.jsx`, `DocumentUpload.jsx`, `Navbar.jsx`, `FormattedText.jsx`).
+- `public/` — Hero and mascot images (`hero.jpg`, `mascot.jpg`).
+- `vercel.json` — Vercel serverless build & API rewrite configuration.
+- `requirements.txt` — Python dependencies optimized for serverless deployment.
 - `package.json` — Frontend dependencies.
 
 ---
 
 ## ⚖️ License & Disclaimer
 
-LegalBuddy is designed for portfolio demonstration, contract auditing, and legal decision support. It does not replace professional legal advice.
+LegalBuddy is designed for portfolio demonstration, contract review, and legal decision support. It does not constitute formal legal representation.
+
