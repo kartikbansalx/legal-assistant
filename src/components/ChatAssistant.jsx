@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Sparkles, Send, Brain, ShieldAlert, CheckCircle2, ChevronDown, ChevronRight, HelpCircle, FileText, UserCheck, Scale, RefreshCw } from 'lucide-react';
 
-export default function ChatAssistant({ activeDoc, onSwitchToTab }) {
+export default function ChatAssistant({ activeDoc }) {
   const [messages, setMessages] = useState([
     {
       sender: 'assistant',
@@ -198,14 +198,6 @@ export default function ChatAssistant({ activeDoc, onSwitchToTab }) {
                         <ShieldAlert className="w-3.5 h-3.5" />
                         Risk: {msg.riskLevel}
                       </span>
-
-                      {/* View Heatmap link */}
-                      <button
-                        onClick={() => onSwitchToTab('heatmap')}
-                        className="text-indigo-400 hover:text-indigo-300 font-medium underline underline-offset-2 ml-auto"
-                      >
-                        Inspect Risk Heatmap →
-                      </button>
                     </div>
 
                     {/* Agent Reasoning Trace Accordion (Standout Feature) */}

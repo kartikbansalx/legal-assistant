@@ -27,20 +27,7 @@ The Receiving Party agrees to indemnify, defend, and hold harmless the Disclosin
 
 5. GOVERNING LAW AND JURISDICTION
 This Agreement shall be governed by and construed in accordance with the laws of the State of California, without regard to its conflict of law principles. Any dispute shall be resolved exclusively in the state or federal courts located in Santa Clara County, California.
-""",
-        "risk_heatmap": [
-            {"section": "Section 1: Confidential Information", "risk": "LOW", "score": 15, "reason": "Standard definition covering trade secrets and proprietary data."},
-            {"section": "Section 2: Obligations of Care", "risk": "LOW", "score": 20, "reason": "Standard reasonable care requirement for mutual protection."},
-            {"section": "Section 3: Term & Survival", "risk": "MEDIUM", "score": 55, "reason": "5-year survival clause after 3-year term is slightly longer than standard 2-year market norm."},
-            {"section": "Section 4: Remedies & Injunctive Relief", "risk": "HIGH", "score": 85, "reason": "Unilateral indemnification and injunction without bond requirement creates high financial exposure for Receiving Party."},
-            {"section": "Section 5: Governing Law", "risk": "LOW", "score": 25, "reason": "Standard California jurisdiction for tech agreements."}
-        ],
-        "clauses": [
-            {"type": "Confidentiality", "section": "Section 1 & 2", "text": "Receiving Party shall hold all Confidential Information in strict confidence and use reasonable care.", "risk": "LOW"},
-            {"type": "Termination", "section": "Section 3", "text": "Agreement remains in effect for 3 years; confidentiality obligations survive for 5 years post-termination.", "risk": "MEDIUM"},
-            {"type": "Indemnity", "section": "Section 4", "text": "Receiving Party agrees to indemnify and hold harmless Disclosing Party against losses; injunctive relief without bond.", "risk": "HIGH"},
-            {"type": "Liability", "section": "Section 4", "text": "Full indemnification for damages with no financial cap specified.", "risk": "HIGH"}
-        ]
+"""
     },
 
     "demo_employment": {
@@ -66,20 +53,7 @@ Company reserves the right to claw back any performance bonuses or unvested equi
 
 5. ARBITRATION & WAIVER OF CLASS ACTION
 Any controversy or claim arising out of or relating to this agreement shall be settled by binding arbitration in Delaware. Employee explicitly waives any right to join or participate in a class action lawsuit against Company.
-""",
-        "risk_heatmap": [
-            {"section": "Section 1: At-Will Employment", "risk": "MEDIUM", "score": 45, "reason": "Standard at-will clause, but allows immediate termination without severance."},
-            {"section": "Section 2: IP Assignment", "risk": "LOW", "score": 30, "reason": "Standard Work-for-Hire clause for software engineering roles."},
-            {"section": "Section 3: Non-Compete & Non-Solicitation", "risk": "HIGH", "score": 95, "reason": "24-month post-employment non-compete covering entire NA & Europe is overly broad and unenforceable in many states (e.g. CA, NY)."},
-            {"section": "Section 4: Bonus Clawback", "risk": "HIGH", "score": 80, "reason": "Unilateral bonus and equity clawback if employee departs before 12 months."},
-            {"section": "Section 5: Binding Arbitration", "risk": "MEDIUM", "score": 60, "reason": "Mandatory arbitration waives court trial rights and class action participation."}
-        ],
-        "clauses": [
-            {"type": "Termination", "section": "Section 1", "text": "Employment is strictly at-will; either party may terminate without cause or advance notice.", "risk": "MEDIUM"},
-            {"type": "Non-Compete", "section": "Section 3", "text": "24 months post-employment restriction across North America and Europe.", "risk": "HIGH"},
-            {"type": "Confidentiality & IP", "section": "Section 2", "text": "Exclusive company ownership of all work product conceived during employment.", "risk": "LOW"},
-            {"type": "Payment & Clawback", "section": "Section 4", "text": "Company retains right to claw back bonuses and equity upon early departure.", "risk": "HIGH"}
-        ]
+"""
     },
 
     "demo_saas": {
@@ -105,19 +79,6 @@ This agreement shall automatically renew for successive twelve (12) month terms 
 
 5. DATA PRIVACY AND SECURITY
 Provider maintains SOC 2 Type II certification. In the event of a security breach, Provider will notify Customer within seventy-two (72) hours of confirmed security incident.
-""",
-        "risk_heatmap": [
-            {"section": "Section 1: SLA & Service Credits", "risk": "MEDIUM", "score": 50, "reason": "99.5% uptime target is slightly below enterprise 99.9% standard; 5% credit limit is weak."},
-            {"section": "Section 2: Unilateral Rate Hike", "risk": "HIGH", "score": 85, "reason": "Allows Provider to raise rates by 15% annually without Customer consent."},
-            {"section": "Section 3: Liability Cap", "risk": "HIGH", "score": 90, "reason": "Liability capped at just 1 month of fees is severely asymmetrical and risky for Customer."},
-            {"section": "Section 4: Auto-Renewal", "risk": "MEDIUM", "score": 65, "reason": "90-day advance cancellation window is unusually strict; failure to notify locks customer in for 12 months."},
-            {"section": "Section 5: Data Breach Notification", "risk": "LOW", "score": 25, "reason": "72-hour notice complies with standard GDPR/CCPA notification timelines."}
-        ],
-        "clauses": [
-            {"type": "Payment", "section": "Section 2", "text": "Annual advance billing; Provider may increase fees up to 15% upon renewal unilaterally.", "risk": "HIGH"},
-            {"type": "Liability", "section": "Section 3", "text": "Provider liability capped at 1 month of fees preceding incident; consequential damages excluded.", "risk": "HIGH"},
-            {"type": "Termination", "section": "Section 4", "text": "Automatic 12-month renewal unless cancelled 90 days prior to term end.", "risk": "MEDIUM"},
-            {"type": "Confidentiality & Data", "section": "Section 5", "text": "SOC 2 Type II compliance with 72-hour incident notification timeline.", "risk": "LOW"}
-        ]
+"""
     }
 }

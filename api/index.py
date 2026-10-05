@@ -12,10 +12,7 @@ import re
 import google.generativeai as genai
 from typing import List, Dict, Any
 
-from api.models import (
-    QueryRequest, UploadResponse, AgentResponse,
-    ClauseExtractRequest, CompareRequest
-)
+from api.models import QueryRequest, UploadResponse, AgentResponse
 from api.sample_docs import SAMPLE_DOCUMENTS
 from api.rag.hybrid_retriever import retrieve_relevant_chunks, chunk_text_by_paragraphs
 
@@ -43,9 +40,7 @@ def get_gemini_key():
 
 def clean_pdf_text(text: str) -> str:
     """Clean common PDF extraction artifacts like broken spaces between single letters."""
-    # Fix single letter space artifacts e.g. "c osts a nd e xpenses" -> "costs and expenses"
     cleaned = re.sub(r'\b([a-zA-Z])\s+([a-zA-Z])\b', r'\1\2', text)
-    # Normalize excessive newlines
     cleaned = re.sub(r'\n{3,}', '\n\n', cleaned)
     return cleaned
 
@@ -111,20 +106,17 @@ async def upload_document(file: UploadFile = File(...)):
         text = clean_pdf_text(raw_text)
         doc_id = f"doc_{uuid.uuid4().hex[:8]}"
 
-        # Process chunks & risk heatmap
         chunks = chunk_text_by_paragraphs(text)
-        heatmap = generate_heuristic_heatmap(text)
-        clauses = extract_heuristic_clauses(text)
 
         DOCSTORE[doc_id] = {
             "doc_id": doc_id,
             "name": filename,
+            "type": "Uploaded Contract",
+            "description": f"Uploaded document: {filename}",
             "text": text,
             "chunks": chunks,
             "num_chunks": len(chunks),
             "num_pages": max(1, len(text) // 1800),
-            "risk_heatmap": heatmap,
-            "clauses": clauses
         }
 
         return {
@@ -133,7 +125,6 @@ async def upload_document(file: UploadFile = File(...)):
             "num_chunks": len(chunks),
             "num_pages": max(1, len(text) // 1800),
             "summary": f"Document '{filename}' successfully ingested. Indexed {len(chunks)} chunks for semantic search.",
-            "risk_heatmap": heatmap
         }
     except HTTPException:
         raise
@@ -147,12 +138,12 @@ async def run_agent(req: QueryRequest):
     Run RAG Agent over the uploaded document using retrieved chunks & Gemini models/gemini-3.8-flash.
     """
     doc_data = DOCSTORE.get(req.doc_id)
-    
+
     # Fallback to first document in store if doc_id is not directly matched
     if not doc_data:
         doc_id_keys = list(DOCSTORE.keys())
         if doc_id_keys:
-            doc_data = DOCSTORE[doc_id_keys[-1]]  # Pick most recently uploaded doc
+            doc_data = DOCSTORE[doc_id_keys[-1]]
 
     doc_name = doc_data["name"] if doc_data else "Uploaded Document"
     doc_text = doc_data["text"] if doc_data else ""
@@ -217,68 +208,6 @@ Instructions:
     return synthesize_rag_fallback(req.query, doc_name, relevant_chunks, req.mode)
 
 
-@app.post("/api/extract-clauses")
-async def extract_clauses(req: ClauseExtractRequest):
-    """Extract standard legal clauses from document."""
-    doc_data = DOCSTORE.get(req.doc_id)
-    if not doc_data:
-        raise HTTPException(404, "Document not found.")
-
-    return {
-        "doc_id": req.doc_id,
-        "document_name": doc_data["name"],
-        "clauses": doc_data.get("clauses", extract_heuristic_clauses(doc_data["text"]))
-    }
-
-
-@app.post("/api/risk-heatmap")
-async def get_risk_heatmap(req: ClauseExtractRequest):
-    """Get section-by-section risk heatmap breakdown."""
-    doc_data = DOCSTORE.get(req.doc_id)
-    if not doc_data:
-        raise HTTPException(404, "Document not found.")
-
-    return {
-        "doc_id": req.doc_id,
-        "document_name": doc_data["name"],
-        "heatmap": doc_data.get("risk_heatmap", generate_heuristic_heatmap(doc_data["text"]))
-    }
-
-
-@app.post("/api/compare")
-async def compare_documents(req: CompareRequest):
-    """Compare two legal documents side-by-side."""
-    doc1 = DOCSTORE.get(req.doc_id_1)
-    doc2 = DOCSTORE.get(req.doc_id_2)
-
-    if not doc1 or not doc2:
-        raise HTTPException(400, "Please select two valid documents to compare.")
-
-    return {
-        "doc_1": {"id": doc1["doc_id"], "name": doc1["name"]},
-        "doc_2": {"id": doc2["doc_id"], "name": doc2["name"]},
-        "topic": req.topic,
-        "comparison": [
-            {
-                "clause_type": "Termination Clause",
-                "doc_1_text": "3 years term with 5 years confidentiality survival post-termination.",
-                "doc_2_text": "At-will termination by either party at any time without advance notice.",
-                "analysis": f"'{doc1['name']}' provides a structured 3-year term, whereas '{doc2['name']}' is strictly at-will.",
-                "recommendation": f"Favor {doc1['name']} for operational stability."
-            },
-            {
-                "clause_type": "Liability & Indemnity",
-                "doc_1_text": "Full indemnification for losses with injunctive relief without bond.",
-                "doc_2_text": "Liability capped at 1 month of prior subscription fees.",
-                "analysis": f"'{doc2['name']}' protects against uncapped liability, while '{doc1['name']}' exposes party to full damages.",
-                "recommendation": f"Negotiate liability cap in {doc1['name']}."
-            }
-        ],
-        "overall_winner": doc1["name"],
-        "summary": f"Audit complete. '{doc1['name']}' offers clearer contractual boundaries."
-    }
-
-
 def synthesize_rag_fallback(query: str, doc_name: str, chunks: List[Dict[str, Any]], mode: str) -> Dict[str, Any]:
     """Synthesize RAG response directly from context chunks if LLM API is unavailable."""
     if not chunks:
@@ -304,37 +233,3 @@ def synthesize_rag_fallback(query: str, doc_name: str, chunks: List[Dict[str, An
         "confidence": 0.91,
         "risk_level": "MEDIUM"
     }
-
-
-def generate_heuristic_heatmap(text: str) -> List[Dict[str, Any]]:
-    lines = [p.strip() for p in text.split("\n\n") if len(p.strip()) > 30]
-    heatmap = []
-    for i, para in enumerate(lines[:6]):
-        section_title = f"Section {i+1}: " + (para.split(".")[0][:40] if "." in para else para[:40])
-        para_lower = para.lower()
-        if any(w in para_lower for w in ["indemnify", "non-compete", "clawback", "unilateral", "injunction", "arbitration"]):
-            risk = "HIGH"
-            score = 85
-            reason = "Contains aggressive legal obligations or non-compete terms."
-        elif any(w in para_lower for w in ["termination", "survive", "renewal", "liability"]):
-            risk = "MEDIUM"
-            score = 55
-            reason = "Contains standard operational conditions."
-        else:
-            risk = "LOW"
-            score = 20
-            reason = "Standard contractual provision."
-        heatmap.append({"section": section_title, "risk": risk, "score": score, "reason": reason})
-    return heatmap if heatmap else [{"section": "Section 1: General Provisions", "risk": "LOW", "score": 20, "reason": "Standard provision."}]
-
-
-def extract_heuristic_clauses(text: str) -> List[Dict[str, Any]]:
-    clauses = []
-    text_lower = text.lower()
-    if "termination" in text_lower or "cancel" in text_lower:
-        clauses.append({"type": "Termination", "section": "Section 3", "text": "Specifies termination conditions and survival obligations.", "risk": "MEDIUM"})
-    if "indemnify" in text_lower or "hold harmless" in text_lower:
-        clauses.append({"type": "Indemnity", "section": "Section 4", "text": "Requires party to indemnify against losses.", "risk": "HIGH"})
-    if "confidential" in text_lower:
-        clauses.append({"type": "Confidentiality", "section": "Section 1 & 2", "text": "Obligates non-disclosure of technical and proprietary data.", "risk": "LOW"})
-    return clauses if clauses else [{"type": "General Terms", "section": "Section 1", "text": "Standard contractual terms.", "risk": "LOW"}]

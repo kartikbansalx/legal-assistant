@@ -176,7 +176,7 @@ export default function DocumentUpload({ sampleDocs, onSelectDoc, activeDocId, o
             <div className="flex items-center gap-3 text-xs text-slate-500 pt-2">
               <span className="flex items-center gap-1"><FileText className="w-3.5 h-3.5 text-indigo-400" /> Auto-Chunking</span>
               <span>•</span>
-              <span className="flex items-center gap-1"><ShieldAlert className="w-3.5 h-3.5 text-amber-400" /> Risk Heatmap</span>
+              <span className="flex items-center gap-1"><Sparkles className="w-3.5 h-3.5 text-amber-400" /> Fast Vector RAG</span>
               <span>•</span>
               <span className="flex items-center gap-1"><FileCode className="w-3.5 h-3.5 text-emerald-400" /> Gemini Embeddings</span>
             </div>

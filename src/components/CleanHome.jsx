@@ -72,7 +72,7 @@ export default function CleanHome({
   const quickPrompts = [
     "Summarize this document",
     "What should I know?",
-    "Find important clauses"
+    "Key obligations & rights"
   ];
 
   return (
@@ -217,7 +217,7 @@ export default function CleanHome({
           <span className="text-2xl font-serif font-bold text-slate-900">02.</span>
           <h4 className="text-sm font-bold text-slate-900">Ask what matters</h4>
           <p className="text-xs text-slate-500 leading-relaxed">
-            Explore clauses and language in a focused workspace.
+            Ask questions and get instant AI answers with citations.
           </p>
         </div>
 
