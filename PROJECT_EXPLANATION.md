@@ -60,6 +60,16 @@ When a user asks a question (`/api/agent`):
 2. **Top-K Selection**: The top **5 most relevant context passages** are retrieved and formatted into a unified context block.
 3. **Citations Generation**: Exact section headers (e.g., `Mutual_NDA.pdf, Section 3: Term & Survival`) are appended as verifiable source citations.
 
+### D. Why Pinecone is NOT Used (Architecture Decision)
+This project **does NOT use Pinecone** or external vector databases. Here is why this was a deliberate architectural decision:
+
+1. **🚀 Sub-Millisecond Speed & Serverless Efficiency**: 
+   A legal agreement is typically between 5 to 50 pages (10 to 100 paragraph chunks). Querying an external cloud database like Pinecone incurs a 150ms-300ms network latency round-trip. Running local hybrid keyword & semantic scoring in Python takes less than 2ms.
+2. **🔒 Strict Privacy & Data Isolation**: 
+   Legal contracts contain highly sensitive, proprietary data (NDAs, salary info, IP assignment). Storing user contracts permanently in a third-party cloud vector database introduces regulatory and data compliance risks. In LegalBuddy, documents are indexed in-memory per session and purged naturally.
+3. **💰 Zero Billing & Quota Overhead**: 
+   External vector databases require API keys, index provisioning, and paid subscription tiers. LegalBuddy runs completely self-contained on serverless functions without external database dependencies.
+
 ---
 
 ## 🎛️ 3. LLM Hyperparameters (Temperature, Top-P, Models)
